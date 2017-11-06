@@ -1,0 +1,233 @@
+<section>
+  <div id="pagedisable">
+    <div class="row hidden-xs hidden-sm show-md show-lg">
+      <div class="col-xs-3 col-sm-3 col-md-3">
+        จากวันที่ : <input type="date" class="form-control" ng-model="startDay">
+      </div>
+      <div class="col-xs-3 col-sm-3 col-md-3">
+        ถึงวันที่ : <input type="date" class="form-control" ng-model="endDay">
+      </div>
+      <div class="col-xs-2 col-sm-2 col-md-2">
+        &nbsp;<button type="button" class="btn btn-primary btn-block" ng-click="vm.getDay(startDay,endDay)">ค้นหา</button>
+      </div>
+      <!--<div class="col-xs-3 col-sm-3 col-md-3 text-right">
+            <div class="pull-right">
+                <button class="btn btn-success fa fa-download" data-toggle="modal" data-target="#myReport" ng-click="sendNull()"></button>
+            </div>
+        </div>-->
+
+    </div>
+    <div class="row show-xs show-sm hidden-md hidden-lg">
+      <div class="row">
+        <div class="col-xs-3 col-sm-3 col-md-3">
+          จากวันที่ :
+        </div>
+        <div class="col-xs-9 col-sm-9 col-md-9">
+          <input type="date" class="form-control" ng-model="startDay">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-3 col-sm-3 col-md-3">
+          ถึงวันที่ :
+        </div>
+        <div class="col-xs-9 col-sm-9 col-md-9">
+          <input type="date" class="form-control" ng-model="endDay">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+          <button type="button" class="btn btn-primary btn-block" ng-click="vm.getDay(startDay,endDay)">ค้นหา</button>
+        </div>
+      </div>
+
+
+      <!--<div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 text-right">
+          <button class="btn btn-success  btn-block" data-toggle="modal" data-target="#myReport" ng-click="sendNull()">ดูข้อมูลรายงาน</button>
+        </div>
+      </div>-->
+    </div>
+  </div>
+</section>
+
+<section class="header-height">
+  <div class="row text-center">
+    <div>
+      <address>
+        <h5>บริษัท ธรรมธุรกิจ เทรดดิ้ง จำกัด</h5>
+        <strong>รายงานงบกำไรขาดทุน</strong>
+        <p>ระหว่างวันที่ {{startDay | date:'dd/MM/yyyy'}} ถึงวันที่ {{endDay | date:'dd/MM/yyyy'}}</p>
+      </address>
+    </div>
+  </div>
+
+  <div class="table-responsive m-t">
+    <label>รายได้จากการขาย</label>
+    <table class="table">
+      <tbody ng-repeat="datas in vm.liststatementincomes.saleincome.trns">
+        <tr>
+          <td width="5%"></td>
+          <td width="10%"></td>
+          <td width="15%">{{datas.accountname}}</td>
+          <td></td>
+          <td width="10%" class="text-right">{{datas.summary | number:2}}</td>
+          <td width="20%" class="text-right"></td>
+        </tr>
+      </tbody>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td width="5%"></td>
+            <td width="20%"></td>
+            <td width="20%" class="bordertable">รวมรายได้จากการขาย</td>
+            <td class="bordertable"></td>
+            <td width="10%" class="bordertable"></td>
+            <td width="20%" class="text-right bordertable">{{vm.liststatementincomes.saleincome.summary | number:2}}</td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+  <div class="table-responsive m-t">
+    <label>ต้นทุน</label>
+    <table class="table">
+      <tbody ng-repeat="datas in vm.liststatementincomes.costsell.trns">
+        <tr>
+          <td width="5%"></td>
+          <td width="10%"></td>
+          <td width="15%">{{datas.accountname}}</td>
+          <td></td>
+          <td width="10%" class="text-right">{{datas.summary | number:2}}</td>
+          <td width="20%" class="text-right"></td>
+        </tr>
+        <!--<tr>
+          <td width="5%"></td>
+          <td width="10%"></td>
+          <td width="20%">ต้นงวด</td>
+          <td width="10%" class="text-right">{{datas.bfsummary | number:2}}</td>
+          <td width="20%"></td>
+          <td width="10%"></td>
+        </tr>
+        <tr>
+          <td width="5%"></td>
+          <td width="10%"></td>
+          <td width="20%">บวก ซื้อ ระหว่างงวด</td>
+          <td width="10%" class="text-right">{{datas.summary | number:2}}</td>
+          <td width="20%"></td>
+          <td width="10%"></td>
+        </tr>
+        <tr>
+          <td width="5%"></td>
+          <td width="10%"></td>
+          <td width="20%">หัก ปลายงวด</td>
+          <td width="10%" class="text-right bordertable">{{datas.cursummary | number:2}}</td>
+          <td width="20%"></td>
+          <td width="10%"></td>
+        </tr>
+        <tr>
+          <td width="5%"></td>
+          <td width="10%"></td>
+          <td width="10%" class="text-right">รวม </td>
+          <td></td>
+          <td width="10%" class="text-right">{{datas.summary | number:2}}</td>
+          <td width="20%"></td>
+        </tr>-->
+      </tbody>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td width="10%"></td>
+            <td width="20%">รวมต้นทุน</td>
+            <td width="20%"></td>
+            <td width="10%"></td>
+            <td width="30%"></td>
+            <td width="10%" class="text-right bordertable">{{vm.liststatementincomes.costsell.summary | number:2}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td width="10%"></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="10%">กำไรขั้นต้น</td>
+            <td width="30%"></td>
+            <td width="10%" class="text-right">{{vm.liststatementincomes.grossprofit | number:2}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td><label>ค่าใช้จ่าย</label></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="10%"></td>
+            <td width="30%"></td>
+            <td width="10%" class="text-right bordertable">{{vm.liststatementincomes.othercost | number:2}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="20%">กำไร (ขาดทุน) จากการดำเนินงาน</td>
+            <td width="20%"></td>
+            <td width="10%" class="text-right">{{vm.liststatementincomes.grossprofitwithoutotherincome | number:2}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td><label>รายได้อื่น ๆ</label></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="10%"></td>
+            <td width="30%"></td>
+            <td width="10%" class="text-right bordertable">{{vm.liststatementincomes.otherincome | number:2}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="20%">กำไร (ขาดทุน) สุทธิก่อนหักดอกเบี้ย</td>
+            <td width="20%"></td>
+            <td width="10%" class="text-right">{{vm.liststatementincomes.grossprofitwithoutinterest | number:2}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="20%">หัก ดอกเบี้ยจ่าย</td>
+            <td width="20%"></td>
+            <td width="10%" class="text-right bordertable">{{vm.liststatementincomes.interestcost | number:2}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="20%">กำไร (ขาดทุน) สุทธิ</td>
+            <td width="20%"></td>
+            <td width="10%" class="text-right bordertable">{{vm.liststatementincomes.netprofit | number:2}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </table>
+  </div>
+</section>

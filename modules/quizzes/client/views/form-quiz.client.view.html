@@ -1,0 +1,149 @@
+<section class="header-height">
+  <div class="page-header">
+    <h1>{{vm.quiz._id ? 'แก้ไขแบบสอบถาม' : 'เพิ่มแบบสอบถาม'}}</h1>
+  </div>
+  <div class="col-md-12">
+    <form name="vm.form.quizForm" class="form-horizontal" ng-submit="vm.save(vm.form.quizForm.$valid)" novalidate>
+      <fieldset>
+        <div class="form-group" show-errors>
+          <h3>หัวข้อ</h3>
+          <input name="topic" type="text" ng-model="vm.quiz.topic" id="topic" class="form-control" placeholder="หัวข้อคำถาม" required>
+        </div>
+        
+        <div class="form-group" ng-if="vm.quiz.quizs.length > 0">
+          <h3>คำถาม ?</h3>
+        </div>
+
+        <div class="form-group" ng-repeat="quiz in vm.quiz.quizs">
+          <div class="row form-group">
+            <div class="col-md-12" ng-show="vm.quiz._id">
+              <div class="col-md-1 textleft">
+                <h3>{{$index+1}}.</h3>
+              </div>
+              <div class="col-md-10 marleft32">
+                <input class="form-control" type="text" ng-model="quiz.question">
+              </div>
+              <div class="col-md-1 marleft32">
+                <button class="btn btn-danger" type="button" ng-click="vm.deleteQuiz(quiz)"><span class="glyphicon glyphicon-trash"></button>
+              </div>
+            </div>
+            <div class="col-md-12" ng-show="!vm.quiz._id">
+              <div class="col-md-1 textleft">
+                <h3>{{$index+1}}.</h3>
+              </div>
+              <div class="col-md-10 marleft55">
+                <h4>{{quiz.question}}</h4>
+              </div>
+              <div class="col-md-1 marleft32">
+                <button class="btn btn-danger" type="button" ng-click="vm.deleteQuiz(quiz)"><span class="glyphicon glyphicon-trash"></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row form-group" ng-if="quiz.questiontype === 'none-choice'">
+            <div class="col-md-6">
+            </div>
+          </div>
+
+          <div class="row form-group" ng-repeat="choice in quiz.choices" ng-show="vm.quiz._id">
+            <div class="col-md-12" ng-if="quiz.questiontype === 'choice'">
+              <div class="col-md-1">
+              </div>
+              <div class="col-md-1">
+                {{$index+1}}.
+              </div>
+              <div class="col-md-8 marleft55">
+                <input class="form-control" type="text" ng-model="choice.choice">
+              </div>
+              <div class="col-md-1 marleft32">
+                <span aria-hidden="true" ng-click="vm.deletechoice(quiz,choice)"><i class="fa fa-times-circle-o font-circle-o"></i></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row form-group" ng-repeat="choice in quiz.choices" ng-show="!vm.quiz._id">
+            <div class="col-md-12" ng-if="quiz.questiontype === 'choice'">
+              <div class="col-md-1">
+              </div>
+              <div class="col-md-1 marleft55">
+                {{$index+1}}.
+              </div>
+              <div class="col-md-8 marleft55">
+                <input class="form-control" type="text" ng-model="choice.choice">
+              </div>
+              <div class="col-md-1 marleft32">
+                <span aria-hidden="true" ng-click="vm.deletechoice(quiz,choice)"><i class="fa fa-times-circle-o font-circle-o"></i></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row form-group" ng-if="quiz.questiontype === 'choice'">
+            <div class="col-md-2 text-left">
+              <span aria-hidden="true" ng-click="vm.addchoice(quiz)"><i class="fa fa-plus-circle font-plus-circle"></i> <label>เพิ่มตัวเลือก</label></span>
+            </div>
+            <div class="col-md-10">
+            </div>
+          </div>
+        </div>
+
+        <div class="row form-group">
+          <div class="col-md-12">
+            <a class="btn btn-success" data-toggle="modal" data-target="#myQuestion">
+              <i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;
+              <span>เพิ่มคำถาม</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="row form-group">
+          <div class="col-md-6">
+            <button type="button" class="btn btn-danger btn-block" ui-sref="quizzes.list">ยกเลิกรายการ</button>
+          </div>
+          <div class="col-md-6">
+            <button type="submit" class="btn btn-primary btn-block">{{vm.quiz._id ? 'บันทึกรายการ' : 'บันทึกรายการ'}}</button>
+          </div>
+        </div>
+        <div ng-show="vm.error" class="text-danger">
+          <strong ng-bind="vm.error"></strong>
+        </div>
+      </fieldset>
+      <!--add Question-->
+      <div class="container">
+        <div class="modal fade" id="myQuestion" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <div class="row"></div>
+                <div class="col-md-6">
+                  <h4 class="modal-title">ตั้งคำถาม</h4>
+                </div>
+                <div class="col-md-6 textRight"><button class="btn btn-danger" type="button" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></button></div>
+              </div>
+              <div class="modal-body">
+                <ul class="list-group">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group" show-errors>
+                        <div>
+                          <label class="control-label" for="name">คำถาม</label>
+                          <input name="name" type="text" ng-model="vm.question" id="name" class="form-control" placeholder="ชื่อคำถาม">
+                        </div>
+                        <label class="control-label" for="name">เลือกแบบคำถาม</label>&nbsp;&nbsp;
+                        <input type="radio" ng-model="vm.questiontype" value="choice">&nbsp;Choice</input>&nbsp;
+                        <input type="radio" ng-model="vm.questiontype" value="none-choice">&nbsp;None-choice</input>
+                      </div>
+                    </div>
+                  </div>
+                </ul>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-block" ng-click="vm.addtopic()" data-dismiss="modal">เพิ่มคำถาม</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>

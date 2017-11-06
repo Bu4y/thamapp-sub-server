@@ -1,0 +1,132 @@
+<!--<section>
+  <div class="page-header">
+    <h1>Payments
+      <div class="pull-right">
+        <a class="btn btn-primary" ui-sref="payments.create">
+          <span>Create</span>
+        </a>
+      </div>
+    </h1>
+  </div>
+
+  <div class="list-group" ng-show="vm.payments.length > 0">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Doc No.</th>
+          <th>Account Name</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="payment in vm.payments | orderBy:'-docdate && docno' " ui-sref="payments.view({ paymentId: payment._id })">
+          <td>
+            <p class="list-group-item-heading">{{$index+1}}</p>
+          </td>
+          <td>
+            <p class="list-group-item-heading">{{payment.docno}}</p>
+          </td>
+          <td>
+            <p class="list-group-item-heading">{{payment.client.accountname}}</p>
+          </td>
+          <td>
+            <p class="list-group-item-heading">{{payment.amount | number:2}}</p>
+          </td>  
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>-->
+
+<section class="page-height">
+  <div class="page-header">
+    <h1>รับเงิน
+      <div class="pull-right">
+        <a class="btn btn-primary" ui-sref="rvs.create">
+          <span>Create</span>
+        </a>
+      </div>
+    </h1>
+  </div>
+  <div class="row hidden-xs show-sm show-md show-lg">
+    <div class="col-md-12">
+      <div class="row form-group alert alert-success">
+        <div class="col-xs-1 col-sm-1 col-md-1">
+          <strong>No.</strong>
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2">
+          <strong>วันที่</strong>
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2">
+          <strong>เลขที่</strong>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 text-center">
+          <strong>รับโดย/รับจาก</strong>
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2">
+          <strong>จำนวนเงิน</strong>
+        </div>
+        <div class="col-xs-1 col-sm-1 col-md-1">
+          <strong>แก้ไข</strong>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <div class="row hidden-xs show-sm show-md show-lg" ng-repeat="payment in vm.payments | filter: {gltype: 'RV'} | orderBy:'-docdate'">
+    <div class="col-md-12">
+      <div class="row form-group">
+        <div class="col-xs-1 col-sm-1 col-md-1" ui-sref="rvs.view({ paymentId: payment._id })">
+          <p class="list-group-item-heading">{{$index+1}}</p>
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2" ui-sref="rvs.view({ paymentId: payment._id })">
+          <p class="list-group-item-heading">{{payment.docdate | date : 'dd/MM/yyyy'}}</p>
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2" ui-sref="rvs.view({ paymentId: payment._id })">
+          <p class="list-group-item-heading">{{payment.docno}}</p>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4" ui-sref="rvs.view({ paymentId: payment._id })">
+          <div class="row" ng-repeat="item in payment.debits track by $index">
+            <div class="col-md-6">
+              <p class="list-group-item-heading">{{'รับโดย : '+item.account.accountname}}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="list-group-item-heading">{{payment.credits[$index].account.accountname ? 'รับจาก : ' + payment.credits[$index].account.accountname
+                : ''}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-2 col-sm-2 col-md-2" ui-sref="rvs.view({ paymentId: payment._id })">
+          <p class="list-group-item-heading">{{payment.totaldebit}}</p>
+        </div>
+        <div class="col-xs-1 col-sm-1 col-md-1">
+          <button type="button" class="btn btn-primary" ui-sref="rvs.edit({ paymentId: payment._id })"><span class="glyphicon glyphicon-edit"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--ng-click="vm.cliketoview(promotion)"-->
+  <div class="row show-xs hidden-sm hidden-md hidden-lg" ng-repeat="promotion in vm.payments">
+    <div class="col-md-12">
+      <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action">
+          <label>Product Id : </label> <label class="list-group-item-heading" ng-bind="promotion.product.name"></label><br>
+          <label>Description : </label> <label class="list-group-item-heading" ng-bind="promotion.description"></label><br>
+          <label>Discount ($) : </label> <label class="list-group-item-heading" ng-bind="promotion.discount.fixbath"></label><br>
+          <label>Discount (%) : </label> <label class="list-group-item-heading" ng-bind="promotion.discount.percen"></label><br>
+          <label>Free Product : </label> <label class="list-group-item-heading" ng-bind="promotion.freeitem.product.name"></label>
+          <div class="row">
+            <div class="col-xs-10 text-right">
+              <button type="button" class="btn btn-primary" ng-click="vm.update(promotion)"><span class="glyphicon glyphicon-edit"></span></button>
+            </div>
+            <div class="col-xs-1 text-right marLeft">
+              <button type="button" class="btn btn-danger" ng-click="vm.remove(promotion)"><span class="glyphicon glyphicon-trash"></span></button>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

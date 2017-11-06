@@ -1,0 +1,375 @@
+<script type="text/javascript">
+  function exportPdf() {
+    html2canvas(document.getElementById('pdf'), {
+      onrendered: function (canvas) {
+        //jigkoh
+        //alert('html2canvas success..');
+        var imgData = canvas.toDataURL("image/jpeg");
+        //alert(imgData);
+        var imgWidth = 210;
+        var pageHeight = 295;
+        var imgHeight = canvas.height * imgWidth / canvas.width;
+        var heightLeft = imgHeight;
+        var doc = new jsPDF('p', 'mm');
+        var position = 0;
+        doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        //alert('before save');
+        heightLeft -= pageHeight;
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          doc.addPage();
+          doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        doc.save('ใบส่งของ.pdf');
+        //end jigkoh
+      }
+    });
+  }
+
+</script>
+<section class="header-height show-xs hidden-sm hidden-md hidden-lg">
+  <!--<div class="page-header hidden-xs show-sm show-md show-lg">
+    <div class="pull-right">
+      <a href="javascript:exportPdf()"><button type="button" class="btn btn-warning"><span class="glyphicon glyphicon-save-file"></span></button></a>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="wrapper wrapper-content animated fadeInRight">
+          <div class="ibox-content p-xl">
+            <div class="row">
+              <div class="col-sm-6">
+                <h5>ผู้รับ:</h5>
+                <address>
+                  <strong>{{vm.requestorder.shipping.firstname + ' '+ vm.requestorder.shipping.lastname }}</strong><br>
+                  <strong>{{vm.requestorder.shipping.address}}</strong>
+                  <strong>{{vm.requestorder.shipping.subdistrict}} {{vm.requestorder.shipping.district}}</strong>
+                  <strong>{{vm.requestorder.shipping.province}} {{vm.requestorder.shipping.postcode}}</strong><br>
+                  <abbr title="Tel">Tel:</abbr>{{vm.requestorder.shipping.tel}}<br>
+                  <abbr title="Email">Email:</abbr>{{vm.requestorder.shipping.email}}
+                </address>
+              </div>
+
+              <div class="col-sm-6 text-right">
+                <h1 ng-bind="vm.requestorder.docno"></h1>
+                <p>
+                  <span ng-bind="vm.requestorder.docdate | date:'dd/MM/yyyy'"><strong> วันที่ :</strong></span><br>
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+              </div>
+              <div class="col-sm-6 text-right">
+              </div>
+            </div>
+            <div class="row form-group alert alert-success">
+              <div class="col-sm-3 col-md-3">
+                <strong>ชื่อสินค้า</strong>
+              </div>
+              <div class="col-sm-3 col-md-3">
+                <strong>ราคา/ชิ้น</strong>
+              </div>
+              <div class="col-sm-3 col-md-3">
+                <strong>จำนวน</strong>
+              </div>
+              <div class="col-sm-3 col-md-3">
+                <strong>รวม</strong>
+              </div>
+            </div>
+            <div class="row form-group" ng-repeat="requestorder in vm.requestorder.items" ui-sref="requestorders.view({ orderId: requestorder._id })">
+              <div class="col-sm-3 col-md-3">
+                <strong>{{requestorder.product.name}}</strong>
+              </div>
+              <div class="col-sm-3 col-md-3">
+                <small>{{requestorder.product.retailerprice}}</small>
+              </div>
+              <div class="col-sm-3 col-md-3">
+                <p>{{requestorder.qty}}</p>
+              </div>
+              <div class="col-sm-3 col-md-3">
+                <p>{{requestorder.amount}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="row">
+                <div ng-show="vm.requestorder.discountpromotion > 0">
+                  <div class="col-xs-11 textRight">
+                    <strong>ส่วนลดจากโปรโมชั่น</strong>
+                  </div>
+                  <div class="col-xs-1 textRight">
+                    {{vm.requestorder.discountpromotion | number:2}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-11 textRight" ng-show="vm.requestorder.totalamount > 0">
+                  <strong>รวมสุทธิ</strong>
+                </div>
+                <div class="col-xs-1 textRight">
+                  {{vm.requestorder.totalamount | number:2}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-3">
+              <div ng-show="vm.authentication.user.roles[0] == 'deliver'">
+                <button class="form-control btn btn-block buttonBlackForm" ui-sref="assignlist">ย้อนกลับ</button>
+              </div>
+            </div>
+            <div class="col-xs-5">
+            </div>
+            <div class="col-xs-2" ng-show="vm.requestorder.deliverystatus === 'wait deliver'">
+              <button class="form-control btn btn-block buttonGreenForm" ng-click="vm.acceptOrder()" ui-sref="assignlist">ยอมรับ</button>
+
+            </div>
+            <div class="col-xs-2" ng-show="vm.requestorder.deliverystatus === 'wait deliver'">
+              <button class="form-control btn btn-block buttonRedForm" ng-click="vm.rejectOrder()" ui-sref="assignlist">ปฏิเสธ</button>
+            </div>
+            <div class="col-xs-2" ng-show="vm.requestorder.deliverystatus === 'accept'">
+            </div>
+            <div class="col-xs-2" ng-show="vm.requestorder.deliverystatus === 'accept'">
+              <button class="form-control btn btn-block buttonSkyForm" ng-click="vm.complete()" ui-sref="assignlist">สำเร็จ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>-->
+  <div class="page-header show-xs hidden-sm hidden-md hidden-lg">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="row">
+          <div class="col-xs-12 text-right">
+            <h1 ng-bind="vm.requestorder.docno"></h1>
+            <p>
+              <span ng-bind="vm.requestorder.docdate | date:'dd/MM/yyyy'"><strong> Date :</strong></span><br>
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <h5>ผู้รับ:</h5>
+            <address>
+              <strong>{{vm.requestorder.shipping.firstname + ' '+ vm.requestorder.shipping.lastname }}</strong><br>
+              <strong>{{vm.requestorder.shipping.address}}</strong>
+              <strong>{{vm.requestorder.shipping.subdistrict}} {{vm.requestorder.shipping.district}}</strong>
+              <strong>{{vm.requestorder.shipping.province}} {{vm.requestorder.shipping.postcode}}</strong><br>
+              <abbr title="Tel">Tel:</abbr>{{vm.requestorder.shipping.tel}}<br>
+              <abbr title="Email">Email:</abbr>{{vm.requestorder.shipping.email}}
+            </address>
+          </div>
+        </div>
+        <div class="row show-xs hidden-sm hidden-md hidden-lg alert alert-success">
+          <div class="col-md-12 text-center">
+            <strong>สินค้าทั้งหมด</strong>
+          </div>
+        </div>
+        <div class="row show-xs hidden-sm hidden-md hidden-lg" ng-repeat="requestorder in vm.requestorder.items" ui-sref="requestorders.view({ orderId: requestorder._id })">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="list-group">
+                <div class="list-group-item list-group-item-action">
+                  <div class="col-sm-4 col-md-4">
+                    <strong>ชื่อสินค้า : </strong> <abbr>{{requestorder.product.name}}</abbr>
+                  </div>
+                  <div class="col-sm-4 col-md-4">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <p>จำนวน : {{requestorder.qty}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row show-xs hidden-sm hidden-md hidden-lg">
+          <div ng-show="vm.requestorder.discountpromotion > 0">
+            <div class="col-xs-9 textRight">
+              <strong>ส่วนลดจากโปรโมชั่น</strong>
+            </div>
+            <div class="col-xs-3">
+              {{vm.requestorder.discountpromotion | number:2}}
+            </div>
+          </div>
+        </div>
+        <div class="row show-xs hidden-sm hidden-md hidden-lg">
+          <div class="col-xs-9 textRight" ng-show="vm.requestorder.totalamount > 0">
+            <strong>รวม</strong>
+          </div>
+          <div class="col-xs-3">
+            {{vm.requestorder.amountqty}}
+          </div>
+        </div>
+        <div class="row show-xs hidden-sm hidden-md hidden-lg marginT">
+          <div class="col-xs-8">
+            <div ng-show="vm.authentication.user.roles[0]=='deliver' ">
+              <button type="button " class="btn buttonBlackForm " ui-sref="assignlist "><i class="fa fa-long-arrow-left" aria-hidden="true "></i></button>
+            </div>
+          </div>
+          <div class="col-xs-2 " ng-show="vm.requestorder.deliverystatus==='wait deliver' ">
+            <button type="button " class="btn buttonGreenForm " ng-click="vm.acceptOrder() " ui-sref="assignlist"><span class="glyphicon glyphicon-check "></span></button>
+          </div>
+          <div class="col-xs-2 " ng-show="vm.requestorder.deliverystatus==='wait deliver' ">
+            <button type="button " class="btn buttonRedForm " ng-click="vm.rejectOrder() " ui-sref="assignlist"><span class="glyphicon glyphicon-trash "></span></button>
+          </div>
+          <div class="col-xs-2" ng-show="vm.requestorder.deliverystatus==='accept' ">
+          </div>
+          <div class="col-xs-2" ng-show="vm.requestorder.deliverystatus==='accept' ">
+            <button type="button " class="btn buttonSkyForm " ng-click="vm.complete() " ui-sref="assignlist"><span class="glyphicon glyphicon-check "></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="header-height hidden-xs show-sm show-md show-lg">
+  <div class="page-header">
+    <div class="page-header hidden-xs show-sm show-md show-lg">
+      <div class="pull-right">
+        <a href="javascript:exportPdf()"><button type="button" class="btn btn-success btn-outline btn-block"><span>Export To PDF</span></button></a>
+      </div>
+      <div>
+        <div class="row" id="pdf">
+          <div class="col-lg-12">
+            <div class="wrapper wrapper-content animated fadeInRight">
+              <div class="ibox-content p-xl">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <h5>ผู้ส่ง:</h5>
+                    <address>
+                      <strong>บริษัท ธรรมธุรกิจ เทรดดิ้ง จำกัด</strong>
+                      <br>11 ซอยพระรามเก้า 60 (ซอย 6 เสรี 8)เขตสวนหลวง กรุงเทพมหานคร 10250<br> เลขประจำตัวผู้เสียภาษี 605548000157
+                      <!--<abbr title="Phone">Tel:</abbr> 02-150-2016 <abbr title="Fax">Fax:</abbr> 02-150-2016-->
+                    </address>
+                  </div>
+
+                  <div class="col-sm-6 text-right">
+                    <h1>ใบส่งของ</h1>
+                    <h1 ng-bind="vm.requestorder.docno"></h1>
+                    <p>
+                      <span ng-bind="vm.requestorder.docdate | date:'dd/MM/yyyy'"><strong> Date :</strong></span><br>
+                    </p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <span>ผู้รับ:</span>
+                    <address>
+                      <strong>{{vm.requestorder.shipping.firstname + ' '+ vm.requestorder.shipping.lastname }}</strong><br>
+                      <strong>{{vm.requestorder.shipping.address}}</strong>
+                      <strong>{{vm.requestorder.shipping.subdistrict}} {{vm.requestorder.shipping.district}}</strong>
+                      <strong>{{vm.requestorder.shipping.province}} {{vm.requestorder.shipping.postcode}}</strong><br>
+                      <abbr title="Tel">Tel:</abbr>{{vm.requestorder.shipping.tel}}<br>
+                      <abbr title="Email">Email:</abbr>{{vm.requestorder.shipping.email}}
+                    </address>
+                  </div>
+                  <div class="col-sm-6 text-right">
+                  </div>
+                </div>
+                <div class="table-responsive m-t">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>ลำดับ</th>
+                        <th width="500px">รายการ</th>
+                        <th class="text-right">จำนวน</th>
+                        <th class="text-right">ราคา/หน่วย</th>
+                        <th class="text-right">จำนวนเงิน</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="requestorder in vm.requestorder.items" ui-sref="requestorder.view({ requestorderId: requestorder._id })">
+                        <td><strong>{{$index +1}}</strong></td>
+                        <td width="500px">
+                          <div><strong>{{requestorder.product.name}}</strong></div>
+                          <!--<small>{{requestorder.product.description}}</small>-->
+                        </td>
+                        <td class="text-right">{{requestorder.qty}}</td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </div>
+                <table class="table invoice-total">
+                  <tbody>
+                    <!--<tr ng-show="vm.requestorder.amountqty > 0">
+                      <td class="no-line"></td>
+                      <td class="no-line"></td>
+                      <td class="no-line text-right"><strong>รวม</strong></td>
+                      <td class="no-line text-center">{{vm.requestorder.amountqty}}</td>
+                    </tr>-->
+                  </tbody>
+                </table>
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td class="no-line text-left"><strong>หมายเหตุ</strong></td>
+                      <td class="no-line"></td>
+                      <td class="no-line"></td>
+                      <td class="no-line text-center"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td class="no-line text-left"></td>
+                      <td class="no-line"></td>
+                      <td class="no-line"></td>
+                      <td class="no-line text-center"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="row marginT">
+                  <div class="col-md-2 text-right">
+                    <span>ผู้รับสินค้า</span>
+                  </div>
+                  <div class="col-md-2 borderBTMT">
+
+                  </div>
+                  <div class="col-md-2 text-right">
+                    <span>ผู้จัดส่ง</span>
+                  </div>
+                  <div class="col-md-2 borderBTMT">
+
+                  </div>
+                  <div class="col-md-2 text-right">
+                    <span>ผู้อนุมัติ</span>
+                  </div>
+                  <div class="col-md-2 borderBTMT">
+
+                  </div>
+                </div>
+                <div class="row marginT">
+                  <div class="col-md-2 text-right">
+                    <span>วันที่</span>
+                  </div>
+                  <div class="col-md-2 borderBTMT">
+
+                  </div>
+                  <div class="col-md-2 text-right">
+                    <span>วันที่</span>
+                  </div>
+                  <div class="col-md-2 borderBTMT">
+
+                  </div>
+                  <div class="col-md-2 text-right">
+                    <span>วันที่</span>
+                  </div>
+                  <div class="col-md-2 borderBTMT">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>

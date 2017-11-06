@@ -1,0 +1,52 @@
+<div class="page-header">
+  <h1>เลือกซื้อสินค้า
+    <div class="pull-right" ng-hide="!vm.authentication.user" ng-if="(vm.authentication.user.roles[0] == 'admin');">
+      <a class="btn btn-primary" ui-sref="products.create">
+        <span>New </span>
+      </a>
+    </div>
+  </h1>
+</div>
+<section ng-init="vm.readProduct();">
+
+
+  <!--<div class="list-group">
+    <a ng-repeat="product in vm.products"
+       ui-sref="products.view({ productId: product._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span ng-bind="product.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="product.user" ng-bind="product.user.displayName"></span>
+        <span ng-if="!product.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" ng-bind="product.name"></h4>
+    </a>
+  </div>-->
+  <div class="row">
+    <div class="col-sm-4 col-md-3 margin-bottom-30" ng-repeat="product in vm.products">
+      <div class="demo-card" ui-sref="products.view({ productId: product._id })">
+        <div class="card border-right border-bottom">
+          <div class="text-center ">
+            <img ng-src="{{product.images}}" alt="{{product.name}}" class="img-rounded img-product">
+          </div>
+          <div class="card-block">
+            <h4 class="card-title word-break">{{product.name}}</h4>
+            <p class="card-text word-break">{{product.description}}</p>
+            <h4 class="card-title text-warning">{{product.price}} บาท</h4>
+            <div class="card-text word-break color-discount" ng-show="product.promotions.length > 0">
+              <h4>โปรโมชั่น</h4>
+            </div>
+            <div ng-repeat="promotion in product.promotions">
+              <label class="card-text word-break color-discount">- {{promotion.description}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-warning text-center" ng-if="vm.products.$resolved && !vm.products.length">
+    No Products yet, why don't you <a ui-sref="products.create">create one</a>?
+  </div>
+</section>
