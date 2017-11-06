@@ -955,6 +955,384 @@ exports.updateinvestor = function (req, res) {
   res.jsonp({ orders: req.findinvestororder, isinvestor: req.isinvestor });
 };
 
+exports.adminCreateSub = function (req, res, next) {
+  var order = req.order;
+  User.findById(req.body._id).sort('-created').exec(function (err, user) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      req.user = user;
+      if (req.user && req.user.roles[0] === 'admin') {
+        User.find({ username: order.shipping.tel }).sort('-created').exec(function (err, users) {
+          if (err) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          } else {
+            if (users.length > 0) {
+              req.usercreate = users[0];
+              next();
+            } else {
+              var firstname = order.shipping.firstname ? order.shipping.firstname : order.shipping.firstName;
+              var lastname = order.shipping.lastname ? order.shipping.lastname : order.shipping.lastName;
+              var newUser = new User({
+                firstName: firstname,
+                lastName: lastname,
+                displayName: firstname + ' ' + lastname,
+                email: order.shipping.tel + '@thamturakit.com',
+                username: order.shipping.tel,
+                password: 'Usr#Pass1234',
+                address: {
+                  address: order.shipping.address,
+                  postcode: order.shipping.postcode,
+                  subdistrict: order.shipping.subdistrict,
+                  province: order.shipping.province,
+                  district: order.shipping.district,
+                  tel: order.shipping.tel,
+                  email: order.shipping.tel + '@thamturakit.com'
+                },
+                provider: 'local'
+              });
+              newUser.save(function (err) {
+                if (err) {
+                  return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                  });
+                } else {
+                  req.usercreate = newUser;
+                  next();
+                }
+              });
+            }
+          }
+        });
+      } else {
+        next();
+      }
+    }
+  });
+};
+
+exports.checkDeliverSub = function (req, res, next) {
+  var order = req.order;
+  if (order.deliverystatus === 'complete') {
+    next();
+  } else {
+    if (req.usercreate && req.usercreate !== undefined) {
+      Order.find({ user: { _id: req.usercreate._id } }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
+        if (err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        } else {
+          var deliver2 = [];
+          if (orders.length > 0) {
+            orders.forEach(function (order) {
+              if (order.deliverystatus === 'complete') {
+                if (order.namedeliver && order.namedeliver !== undefined) {
+                  deliver2.push(order.namedeliver);
+                }
+              }
+            });
+            if (deliver2.length > 0) {
+              req.olddeliver = deliver2[0];
+              next();
+            } else {
+              next();
+            }
+          } else {
+            next();
+          }
+        }
+      });
+    } else {
+      Order.find({ user: { _id: req.user._id } }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
+        if (err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        } else {
+          var deliver = [];
+          if (orders.length > 0) {
+            orders.forEach(function (order) {
+              if (order.deliverystatus === 'complete') {
+                if (order.namedeliver && order.namedeliver !== undefined) {
+                  deliver.push(order.namedeliver);
+                }
+              }
+            });
+            if (deliver.length > 0) {
+              req.olddeliver = deliver[0];
+              next();
+            } else {
+              next();
+            }
+          } else {
+            next();
+          }
+
+        }
+      });
+    }
+  }
+};
+
+exports.findOldDeliverSub = function (req, res, next) {
+  var order = req.order;
+
+  if (order.deliverystatus === 'complete') {
+    next();
+  } else {
+    if (req.olddeliver && req.olddeliver !== undefined) {
+      Pushnotiuser.find().sort('-created').where('role').equals('deliver').populate('user').exec(function (err, delivers) {
+        if (err) {
+
+        } else {
+          var delivertokens = [];
+          var usernearby = [];
+          // var delivertokens2 = [];
+          // var delivertokensOther = [];
+          if (delivers.length > 0) {
+
+            delivers.forEach(function (deliver) {
+              if (deliver.user && deliver.user._id.toString() === req.olddeliver._id.toString()) {
+
+
+                //console.log(deliver.user.address);
+
+                if (usernearby.indexOf(deliver.user._id) === -1) {
+                  usernearby.push(deliver.user._id);
+                }
+                if (delivertokens.indexOf(deliver.device_token) === -1) {
+                  delivertokens.push(deliver.device_token);
+                }
+              }
+
+              //delivertokens.push(deliver.device_token);
+            });
+            req.tokens = delivertokens;
+            req.usernearby = usernearby;
+            next();
+          } else {
+            next();
+          }
+        }
+      });
+    } else {
+      next();
+    }
+  }
+
+};
+
+exports.nearByKmSub = function (req, res, next) {
+  var order = req.order;
+
+  if (order.deliverystatus === 'complete') {
+    next();
+  } else {
+    if (!req.olddeliver) {
+      req.usernearby = [];
+      req.tokens = [];
+      if (order && order.shipping && order.shipping.sharelocation) {
+        Pushnotiuser.find().sort('-created').where('role').equals('deliver').populate('user').exec(function (err, delivers) {
+          if (err) {
+
+          } else {
+            var delivertokens = [];
+            var usernearby = [];
+            // var delivertokens2 = [];
+            // var delivertokensOther = [];
+            if (delivers.length > 0) {
+
+              delivers.forEach(function (deliver) {
+
+                //console.log(deliver.user.address);
+                if (deliver.user && deliver.user.address && deliver.user.address.sharelocation) {
+                  var dist = getDistanceFromLatLonInKm(order.shipping.sharelocation.latitude, order.shipping.sharelocation.longitude, deliver.user.address.sharelocation.latitude, deliver.user.address.sharelocation.longitude);
+                  //console.log('------------- ' + dist + ' km. -------------')
+                  if (dist <= minDistance) {
+                    if (usernearby.indexOf(deliver.user._id) === -1) {
+                      usernearby.push(deliver.user._id);
+                    }
+                    if (delivertokens.indexOf(deliver.device_token) === -1) {
+                      delivertokens.push(deliver.device_token);
+                    }
+                  }
+                }
+                //delivertokens.push(deliver.device_token);
+              });
+              req.tokens = delivertokens;
+              req.usernearby = usernearby;
+              next();
+            } else {
+              next();
+            }
+          }
+        });
+      }
+
+    } else {
+      next();
+    }
+  }
+};
+
+exports.nearByPostCodeSub = function (req, res, next) {
+  var order = req.order;
+  if (order.deliverystatus === 'complete') {
+    next();
+  } else {
+    if (!req.olddeliver) {
+
+      if (req.usernearby && req.usernearby.length === 0) {
+        if (order && order.shipping && order.shipping.sharelocation) {
+          Pushnotiuser.find().sort('-created').where('role').equals('deliver').populate('user').exec(function (err, delivers) {
+            if (err) {
+
+            } else {
+              if (delivers.length > 0) {
+
+                var delivertokens = [];
+                var usernearby = [];
+                // var delivertokens2 = [];
+                // var delivertokensOther = [];
+                delivers.forEach(function (deliver) {
+
+                  //console.log(deliver.user.address);
+                  if (deliver.user && deliver.user.address) {
+                    if (deliver.user.address.postcode === order.shipping.postcode) {
+                      if (usernearby.indexOf(deliver.user._id) === -1) {
+                        usernearby.push(deliver.user._id);
+                      }
+                      if (delivertokens.indexOf(deliver.device_token) === -1) {
+                        delivertokens.push(deliver.device_token);
+                      }
+                    }
+                  }
+                  //delivertokens.push(deliver.device_token);
+                });
+                req.tokens = delivertokens;
+                req.usernearby = usernearby;
+                next();
+              } else {
+                next();
+              }
+            }
+          });
+        }
+
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+
+  }
+};
+
+exports.nearByDistrictSub = function (req, res, next) {
+  var order = req.order;
+  if (order.deliverystatus === 'complete') {
+    next();
+  } else {
+    if (!req.olddeliver) {
+
+      if (req.usernearby && req.usernearby.length === 0) {
+        if (order && order.shipping && order.shipping.sharelocation) {
+          Pushnotiuser.find().sort('-created').where('role').equals('deliver').populate('user').exec(function (err, delivers) {
+            if (err) {
+
+            } else {
+              if (delivers.length > 0) {
+
+                var delivertokens = [];
+                var usernearby = [];
+                // var delivertokens2 = [];
+                // var delivertokensOther = [];
+                delivers.forEach(function (deliver) {
+
+                  //console.log(deliver.user.address);
+                  if (deliver.user && deliver.user.address) {
+                    if (deliver.user.address.district === order.shipping.district) {
+                      if (usernearby.indexOf(deliver.user._id) === -1) {
+                        usernearby.push(deliver.user._id);
+                      }
+                      if (delivertokens.indexOf(deliver.device_token) === -1) {
+                        delivertokens.push(deliver.device_token);
+                      }
+                    }
+                  }
+                  //delivertokens.push(deliver.device_token);
+                });
+                req.tokens = delivertokens;
+                req.usernearby = usernearby;
+                next();
+              } else {
+                next();
+              }
+            }
+          });
+        }
+
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+
+  }
+};
+
+exports.createSub = function (req, res) {
+  var order = req.order;
+  if (req.user && req.user.roles[0] === 'admin') {
+    order.user = req.usercreate;
+  } else {
+    order.user = req.user;
+  }
+  if (req.olddeliver && req.olddeliver !== undefined) {
+    order.namedeliver = req.olddeliver;
+    order.deliverystatus = 'wait deliver';
+  }
+  if (req.usernearby && req.usernearby.length > 0) {
+    order.usernearby = req.usernearby;
+  }
+  // console.log(req.usercreate);
+  // if (req.user) {
+  //   order.user = req.usercreate;
+  // }
+  // console.log(order);
+  order.save(function (err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      // console.log(order);
+      Order.findById(order._id).populate('user', 'displayName').populate('items.product').populate('namedeliver').exec(function (err2, orders) {
+        if (err2) {
+          console.log('err');
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err2)
+          });
+        } else {
+          sendNewOrder();
+          if (orders && orders.usernearby.length > 0) {
+            sendNewdeliverOrder(req.tokens);
+          }
+          // console.log(orders);
+          res.jsonp(orders);
+        }
+      });
+    }
+  });
+};
+
 function saleProduct(orders) {
   var products = [];
   var productId = [];

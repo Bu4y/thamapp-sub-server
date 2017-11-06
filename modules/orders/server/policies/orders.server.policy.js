@@ -38,6 +38,9 @@ exports.invokeRolesPolicies = function () {
       }, {
         resources: '/api/updateinvestors',
         permissions: ['get']
+      }, {
+        resources: '/api/suborders/:orderId',
+        permissions: '*'
       }]
   }, {
       roles: ['deliver'],
@@ -68,6 +71,9 @@ exports.invokeRolesPolicies = function () {
         }, {
           resources: '/api/updateinvestors',
           permissions: ['get']
+        }, {
+          resources: '/api/suborders/:orderId',
+          permissions: '*'
         }]
     }, {
       roles: ['user'],
@@ -95,6 +101,9 @@ exports.invokeRolesPolicies = function () {
         }, {
           resources: '/api/updateinvestors',
           permissions: ['get']
+        }, {
+          resources: '/api/suborders/:orderId',
+          permissions: '*'
         }]
     }, {
       roles: ['guest'],
@@ -122,6 +131,9 @@ exports.invokeRolesPolicies = function () {
         }, {
           resources: '/api/updateinvestors',
           permissions: ['get']
+        }, {
+          resources: '/api/suborders/:orderId',
+          permissions: '*'
         }]
     }]);
 };
