@@ -1172,6 +1172,8 @@ exports.nearByKmSub = function (req, res, next) {
             }
           }
         });
+      }else{
+        next();
       }
 
     } else {
