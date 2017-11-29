@@ -48,7 +48,8 @@ module.exports = function (app) {
     .get(ordersPolicy.isAllowed, orders.findinvestor, orders.updateusertoinvestor, orders.updateinvestor);
 
   app.route('/api/suborders/:orderId')
-    .post(orders.adminCreateSub, orders.findOldDeliverSub, orders.nearByKmSub, orders.nearByPostCodeSub, orders.nearByDistrictSub, orders.createSub);
+    .post(orders.adminCreateSub, orders.createSub);
+    // orders.findOldDeliverSub, orders.nearByKmSub, orders.nearByPostCodeSub, orders.nearByDistrictSub
     // .put(orders.test);
   // Finish by binding the Order middleware
   app.param('postcode', orders.postcode);
