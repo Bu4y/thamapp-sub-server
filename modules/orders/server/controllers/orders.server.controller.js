@@ -1493,6 +1493,7 @@ function sendNewOrder() {
             // }
             url: pushNotiUrl,
             headers: {
+              'Content-Type': 'application/json',
               'Authorization': 'Basic YTcwY2UxODgtNGFhOC00YzM5LWEzZjMtOTNkNDJlZjhkMGQ4'
             },
             method: 'POST',
