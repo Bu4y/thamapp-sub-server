@@ -12,7 +12,7 @@ var path = require('path'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
   _ = require('lodash'),
   request = require('request'),
-  pushNotiUrl = process.env.PUSH_NOTI_URL || 'https://api.ionic.io/push/notifications',
+  pushNotiUrl = process.env.PUSH_NOTI_URL || 'https://onesignal.com/api/v1/notifications', //https://api.ionic.io/push/notifications
   pushNotiAuthenADM = {
     profile: process.env.PUSH_NOTI_PROFILE || 'dev',
     auth: process.env.PUSH_NOTI_ADM_AUTH || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxZWM3YWNjZi1hYTNjLTQ2ZjUtYmMyNS1kODQ1MmQ2NDRlZmMifQ.Q3-2r2TL0Mq6Aq1JJSmUoTnh0LaoyMA-ZVuOylkJ7nI'
@@ -1497,7 +1497,7 @@ function sendNewOrder() {
             },
             method: 'POST',
             json: {
-              app_id: 'eb83f5ff-41d2-46b2-817b-23c0a6616199f',
+              app_id: 'eb83f5ff-41d2-46b2-817b-23c0a6616199',
               headings: {
                 en: 'คุณมีรายการสั่งซื้อข้าวใหม่'
               },
