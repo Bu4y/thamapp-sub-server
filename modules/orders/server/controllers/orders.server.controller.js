@@ -1472,8 +1472,9 @@ function sendNewOrder() {
         } else {
           var admtokens = [];
           admins.forEach(function (admin) {
-
-            admtokens.push(admin.device_token);
+            if (admin.device_token.length === 36) {
+              admtokens.push(admin.device_token);
+            }
           });
           console.log(admtokens);
           request({
