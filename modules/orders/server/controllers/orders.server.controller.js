@@ -1172,7 +1172,7 @@ exports.nearByKmSub = function (req, res, next) {
             }
           }
         });
-      }else{
+      } else {
         next();
       }
 
@@ -1477,19 +1477,34 @@ function sendNewOrder() {
           });
 
           request({
+            // url: pushNotiUrl,
+            // auth: {
+            //   'bearer': pushNotiAuthenADM.auth
+            // },
+            // method: 'POST',
+            // json: {
+            //   tokens: admtokens,
+            //   profile: pushNotiAuthenADM.profile,
+            //   notification: {
+            //     message: 'คุณมีรายการสั่งซื้อข้าวใหม่ ' + orders.length + ' รายการ',
+            //     ios: { badge: orders.length, sound: 'default' },
+            //     android: { data: { badge: orders.length } }//{ badge: orders.length, sound: 'default' }
+            //   }
+            // }
             url: pushNotiUrl,
-            auth: {
-              'bearer': pushNotiAuthenADM.auth
+            headers: {
+              'Authorization': 'Basic YTcwY2UxODgtNGFhOC00YzM5LWEzZjMtOTNkNDJlZjhkMGQ4'
             },
             method: 'POST',
             json: {
-              tokens: admtokens,
-              profile: pushNotiAuthenADM.profile,
-              notification: {
-                message: 'คุณมีรายการสั่งซื้อข้าวใหม่ ' + orders.length + ' รายการ',
-                ios: { badge: orders.length, sound: 'default' },
-                android: { data: { badge: orders.length } }//{ badge: orders.length, sound: 'default' }
-              }
+              app_id: 'eb83f5ff-41d2-46b2-817b-23c0a6616199f',
+              headings: {
+                en: 'คุณมีรายการสั่งซื้อข้าวใหม่'
+              },
+              contents: {
+                en: 'คุณมีรายการสั่งซื้อข้าวใหม่ ' + orders.length + ' รายการ'
+              },
+              include_player_ids: admtokens
             }
           }, function (error, response, body) {
             if (error) {
