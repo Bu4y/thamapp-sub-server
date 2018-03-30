@@ -1475,7 +1475,7 @@ function sendNewOrder() {
 
             admtokens.push(admin.device_token);
           });
-
+          console.log(admtokens);
           request({
             // url: pushNotiUrl,
             // auth: {
@@ -1513,6 +1513,8 @@ function sendNewOrder() {
             } else if (response.body.error) {
               console.log('Error: ', response.body.error);
             }
+            console.log('response : ', response);
+            console.log('body : ', body);
           });
         }
       });
