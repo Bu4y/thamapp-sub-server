@@ -1499,13 +1499,13 @@ function sendNewOrder() {
             method: 'POST',
             json: {
               app_id: 'eb83f5ff-41d2-46b2-817b-23c0a6616199',
+              include_player_ids: admtokens,
               headings: {
                 en: 'คุณมีรายการสั่งซื้อข้าวใหม่'
               },
               contents: {
                 en: 'คุณมีรายการสั่งซื้อข้าวใหม่ ' + orders.length + ' รายการ'
-              },
-              include_player_ids: admtokens
+              }
             }
           }, function (error, response, body) {
             if (error) {
