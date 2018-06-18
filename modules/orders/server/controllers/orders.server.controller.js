@@ -1562,22 +1562,7 @@ function sendNewOrder() {
               admtokens.push(admin.device_token);
             }
           });
-          console.log(admtokens);
           request({
-            // url: pushNotiUrl,
-            // auth: {
-            //   'bearer': pushNotiAuthenADM.auth
-            // },
-            // method: 'POST',
-            // json: {
-            //   tokens: admtokens,
-            //   profile: pushNotiAuthenADM.profile,
-            //   notification: {
-            //     message: 'คุณมีรายการสั่งซื้อข้าวใหม่ ' + orders.length + ' รายการ',
-            //     ios: { badge: orders.length, sound: 'default' },
-            //     android: { data: { badge: orders.length } }//{ badge: orders.length, sound: 'default' }
-            //   }
-            // }
             url: pushNotiUrl,
             headers: {
               'Content-Type': 'application/json',
@@ -1600,8 +1585,6 @@ function sendNewOrder() {
             } else if (response.body.error) {
               console.log('Error: ', response.body.error);
             }
-            console.log('response : ', response);
-            console.log('body : ', body);
           });
         }
       });
@@ -1688,46 +1671,46 @@ function sendNewdeliverOrder(tokens) {
 
 }
 
-function checkNotiUser(delivers, shipping) {
-  var array = [];
-  delivers.forEach(function (deliver) {
-    if (deliver.user && deliver.user.address) {
-      array.push(deliver);
-    }
-  });
-  if (array.length > 0) {
-    var postcodes = array.filter(function (obj) {
-      var postcode = obj.user.address;
-      return postcode.postcode === shipping.postcode;
-    });
-    if (postcodes.length > 0) {
-      return {
-        data: postcodes,
-        notiMessage: 'คุณมีรายการสั่งซื้อข้าวใหม่ในเขตรหัสไปรษณีย์ของคุณ'
-      };
-    } else {
-      var district = array.filter(function (obj) {
-        var dis = obj.user.address;
-        return dis.district === shipping.district;
-      });
-      if (district.length > 0) {
-        return {
-          data: district,
-          notiMessage: 'คุณมีรายการสั่งซื้อข้าวใหม่ในเขตอำเภอของคุณ'
-        };
-      } else {
-        var province = array.filter(function (obj) {
-          var pro = obj.user.address;
-          return pro.province === shipping.province;
-        });
-        return {
-          data: province,
-          notiMessage: 'คุณมีรายการสั่งซื้อข้าวใหม่ในเขตจังหวัดของคุณ'
-        };
-      }
-    }
-  }
-}
+// function checkNotiUser(delivers, shipping) {
+//   var array = [];
+//   delivers.forEach(function (deliver) {
+//     if (deliver.user && deliver.user.address) {
+//       array.push(deliver);
+//     }
+//   });
+//   if (array.length > 0) {
+//     var postcodes = array.filter(function (obj) {
+//       var postcode = obj.user.address;
+//       return postcode.postcode === shipping.postcode;
+//     });
+//     if (postcodes.length > 0) {
+//       return {
+//         data: postcodes,
+//         notiMessage: 'คุณมีรายการสั่งซื้อข้าวใหม่ในเขตรหัสไปรษณีย์ของคุณ'
+//       };
+//     } else {
+//       var district = array.filter(function (obj) {
+//         var dis = obj.user.address;
+//         return dis.district === shipping.district;
+//       });
+//       if (district.length > 0) {
+//         return {
+//           data: district,
+//           notiMessage: 'คุณมีรายการสั่งซื้อข้าวใหม่ในเขตอำเภอของคุณ'
+//         };
+//       } else {
+//         var province = array.filter(function (obj) {
+//           var pro = obj.user.address;
+//           return pro.province === shipping.province;
+//         });
+//         return {
+//           data: province,
+//           notiMessage: 'คุณมีรายการสั่งซื้อข้าวใหม่ในเขตจังหวัดของคุณ'
+//         };
+//       }
+//     }
+//   }
+// }
 
 function sendAcceptedDeliverOrder(order, deliver) {
   Pushnotiuser.find({
@@ -1903,20 +1886,21 @@ function sendWaitDeliUser(order) {
       users.forEach(function (user) {
         usrtokens.push(user.device_token);
       });
-
       request({
         url: pushNotiUrl,
-        auth: {
-          'bearer': pushNotiAuthenUSR.auth
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': process.env.ONESIGNAL_CUSTOMER_TOKEN || 'Basic NzhjOTRlMDEtOWE3NC00MjIxLWJjZjYtY2M2MmJkM2MzMzhk'
         },
         method: 'POST',
         json: {
-          tokens: usrtokens,
-          profile: pushNotiAuthenUSR.profile,
-          notification: {
-            message: 'ทางเราได้รับรายการสั่งซื้อของคุณแล้ว',
-            //ios: { badge: orders.length, sound: 'default' },
-            //android: { data: { badge: orders.length } }//{ badge: orders.length, sound: 'default' }
+          app_id: process.env.ONESIGNAL_CUSTOMER_APPID || 'd6f891b3-3b64-499e-be1f-c508f11adedf',
+          include_player_ids: usrtokens,
+          headings: {
+            en: 'ธรรมธุรกิจ'
+          },
+          contents: {
+            en: 'ทางเราได้รับรายการสั่งซื้อของคุณแล้ว'
           }
         }
       }, function (error, response, body) {
@@ -1947,20 +1931,21 @@ function sendAcceptUser(order) {
       users.forEach(function (user) {
         usrtokens.push(user.device_token);
       });
-
       request({
         url: pushNotiUrl,
-        auth: {
-          'bearer': pushNotiAuthenUSR.auth
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': process.env.ONESIGNAL_CUSTOMER_TOKEN || 'Basic NzhjOTRlMDEtOWE3NC00MjIxLWJjZjYtY2M2MmJkM2MzMzhk'
         },
         method: 'POST',
         json: {
-          tokens: usrtokens,
-          profile: pushNotiAuthenUSR.profile,
-          notification: {
-            message: 'คำสั่งซื้อของคุณอยู่ระหว่างจัดส่ง',
-            //ios: { badge: orders.length, sound: 'default' },
-            //android: { data: { badge: orders.length } }//{ badge: orders.length, sound: 'default' }
+          app_id: process.env.ONESIGNAL_CUSTOMER_APPID || 'd6f891b3-3b64-499e-be1f-c508f11adedf',
+          include_player_ids: usrtokens,
+          headings: {
+            en: 'ธรรมธุรกิจ'
+          },
+          contents: {
+            en: 'คำสั่งซื้อของคุณอยู่ระหว่างจัดส่ง'
           }
         }
       }, function (error, response, body) {
@@ -1991,20 +1976,21 @@ function sendCompleteUser(order) {
       users.forEach(function (user) {
         usrtokens.push(user.device_token);
       });
-
       request({
         url: pushNotiUrl,
-        auth: {
-          'bearer': pushNotiAuthenUSR.auth
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': process.env.ONESIGNAL_CUSTOMER_TOKEN || 'Basic NzhjOTRlMDEtOWE3NC00MjIxLWJjZjYtY2M2MmJkM2MzMzhk'
         },
         method: 'POST',
         json: {
-          tokens: usrtokens,
-          profile: pushNotiAuthenUSR.profile,
-          notification: {
-            message: 'ขอขอบคุณที่ใช้บริการ ธรรมธุรกิจ',
-            //ios: { badge: orders.length, sound: 'default' },
-            //android: { data: { badge: orders.length } }//{ badge: orders.length, sound: 'default' }
+          app_id: process.env.ONESIGNAL_CUSTOMER_APPID || 'd6f891b3-3b64-499e-be1f-c508f11adedf',
+          include_player_ids: usrtokens,
+          headings: {
+            en: 'ธรรมธุรกิจ'
+          },
+          contents: {
+            en: 'ขอขอบคุณที่ใช้บริการ ธรรมธุรกิจ'
           }
         }
       }, function (error, response, body) {
