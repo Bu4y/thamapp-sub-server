@@ -1648,17 +1648,19 @@ function sendNewdeliverOrder(tokens) {
   // });
   request({
     url: pushNotiUrl,
-    auth: {
-      'bearer': pushNotiAuthenDEL.auth
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': process.env.ONESIGNAL_DELIVER_TOKEN || 'Basic ZmFkNzVmOGUtN2U3MS00Nzc2LWI1YmItNDZmMGZiMDEyNmE0'
     },
     method: 'POST',
     json: {
-      tokens: tokens,
-      profile: pushNotiAuthenDEL.profile,
-      notification: {
-        message: 'คุณมีรายการสั่งซื้อข้าวใหม่',
-        // ios: { sound: 'default' },
-        // android: { data: { badge: orders.length } }//{ badge: orders.length, sound: 'default' }
+      app_id: process.env.ONESIGNAL_DELIVER_APPID || 'e63a6bd1-b40a-471f-a7d9-ecf0e2a96fe7',
+      include_player_ids: tokens,
+      headings: {
+        en: 'ธรรมธุรกิจ'
+      },
+      contents: {
+        en: 'คุณมีรายการสั่งซื้อข้าวใหม่'
       }
     }
   }, function (error, response, body) {
@@ -1668,7 +1670,6 @@ function sendNewdeliverOrder(tokens) {
       console.log('Error: ', response.body.error);
     }
   });
-
 }
 
 // function checkNotiUser(delivers, shipping) {
@@ -1725,18 +1726,21 @@ function sendAcceptedDeliverOrder(order, deliver) {
       delivers.forEach(function (deliver) {
         delivertokens.push(deliver.device_token);
       });
-
       request({
         url: pushNotiUrl,
-        auth: {
-          'bearer': pushNotiAuthenDEL.auth
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': process.env.ONESIGNAL_DELIVER_TOKEN || 'Basic ZmFkNzVmOGUtN2U3MS00Nzc2LWI1YmItNDZmMGZiMDEyNmE0'
         },
         method: 'POST',
         json: {
-          tokens: delivertokens,
-          profile: pushNotiAuthenDEL.profile,
-          notification: {
-            message: deliver.displayName + ' รับงานเลขที่ ' + order.docno
+          app_id: process.env.ONESIGNAL_DELIVER_APPID || 'e63a6bd1-b40a-471f-a7d9-ecf0e2a96fe7',
+          include_player_ids: delivertokens,
+          headings: {
+            en: 'ธรรมธุรกิจ'
+          },
+          contents: {
+            en: deliver.displayName + ' รับงานเลขที่ ' + order.docno
           }
         }
       }, function (error, response, body) {
@@ -1771,32 +1775,25 @@ function sendNewDeliver(deliver) {
             if (err) {
 
             } else {
-              var admtokens = [];
+              var delivertokens = [];
               delivers.forEach(function (deliver) {
-                admtokens.push(deliver.device_token);
+                delivertokens.push(deliver.device_token);
               });
-              //console.log(admtokens);
               request({
                 url: pushNotiUrl,
-                auth: {
-                  'bearer': pushNotiAuthenDEL.auth
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': process.env.ONESIGNAL_DELIVER_TOKEN || 'Basic ZmFkNzVmOGUtN2U3MS00Nzc2LWI1YmItNDZmMGZiMDEyNmE0'
                 },
                 method: 'POST',
                 json: {
-                  tokens: admtokens,
-                  profile: pushNotiAuthenDEL.profile,
-                  notification: {
-                    message: 'คุณมีรายการค้างส่งข้าว ' + orders.length + ' รายการ',
-                    ios: {
-                      badge: orders.length,
-                      sound: 'default'
-                    },
-                    android: {
-                      data: {
-                        badge: orders.length
-                      }
-                    }
-                    // android: { badge: orders.length, sound: 'default' }
+                  app_id: process.env.ONESIGNAL_DELIVER_APPID || 'e63a6bd1-b40a-471f-a7d9-ecf0e2a96fe7',
+                  include_player_ids: delivertokens,
+                  headings: {
+                    en: 'ธรรมธุรกิจ'
+                  },
+                  contents: {
+                    en: 'คุณมีรายการค้างส่งข้าว ' + orders.length + ' รายการ'
                   }
                 }
               }, function (error, response, body) {
@@ -1835,25 +1832,25 @@ function sendCompleteDeliver(deliver) {
             if (err) {
 
             } else {
-              var admtokens = [];
+              var delivertokens = [];
               delivers.forEach(function (deliver) {
-                admtokens.push(deliver.device_token);
+                delivertokens.push(deliver.device_token);
               });
-              //console.log(admtokens);
               request({
                 url: pushNotiUrl,
-                auth: {
-                  'bearer': pushNotiAuthenDEL.auth
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': process.env.ONESIGNAL_DELIVER_TOKEN || 'Basic ZmFkNzVmOGUtN2U3MS00Nzc2LWI1YmItNDZmMGZiMDEyNmE0'
                 },
                 method: 'POST',
                 json: {
-                  tokens: admtokens,
-                  profile: pushNotiAuthenDEL.profile,
-                  notification: {
-                    message: 'คุณมีรายการค้างส่งข้าวคงเหลือ ' + orders.length + ' รายการ',
-                    //ios: { badge: orders.length, sound: 'default' },
-                    //android: { data: { badge: orders.length } }
-                    // android: { badge: orders.length, sound: 'default' }
+                  app_id: process.env.ONESIGNAL_DELIVER_APPID || 'e63a6bd1-b40a-471f-a7d9-ecf0e2a96fe7',
+                  include_player_ids: delivertokens,
+                  headings: {
+                    en: 'ธรรมธุรกิจ'
+                  },
+                  contents: {
+                    en: 'คุณมีรายการค้างส่งข้าวคงเหลือ ' + orders.length + ' รายการ'
                   }
                 }
               }, function (error, response, body) {
