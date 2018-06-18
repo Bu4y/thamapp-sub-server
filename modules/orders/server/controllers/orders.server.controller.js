@@ -1495,11 +1495,11 @@ function sendNewOrder() {
             url: pushNotiUrl,
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'Basic YTcwY2UxODgtNGFhOC00YzM5LWEzZjMtOTNkNDJlZjhkMGQ4'
+              'Authorization': 'Basic MjZjMWRhMDUtNjYxZC00MjI4LTg1NWUtNzhhNTFlNjZjMGJk'
             },
             method: 'POST',
             json: {
-              app_id: 'eb83f5ff-41d2-46b2-817b-23c0a6616199',
+              app_id: 'd70cd18c-0d4a-49eb-ab23-97be42a22fa4',
               include_player_ids: admtokens,
               headings: {
                 en: 'คุณมีรายการสั่งซื้อข้าวใหม่'
