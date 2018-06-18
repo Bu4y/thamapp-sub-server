@@ -33,8 +33,8 @@ Date.prototype.yyyymmdd = function () {
   var dd = this.getDate();
 
   return [this.getFullYear(),
-  (mm > 9 ? '' : '0') + mm,
-  (dd > 9 ? '' : '0') + dd
+    (mm > 9 ? '' : '0') + mm,
+    (dd > 9 ? '' : '0') + dd
   ].join('');
 };
 /**
@@ -43,7 +43,9 @@ Date.prototype.yyyymmdd = function () {
 // indexOf ถ้า === -1 คือไม่มี
 exports.postcode = function (req, res, next, postcode) {
   req.postcode = postcode;
-  Postcode.find({ postcode: postcode }).sort('-created').exec(function (err, postcode) {
+  Postcode.find({
+    postcode: postcode
+  }).sort('-created').exec(function (err, postcode) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -60,8 +62,12 @@ exports.postcode = function (req, res, next, postcode) {
                 message: errorHandler.getErrorMessage(err)
               });
             } else {
-              var userPostcodes = users.filter(function (obj) { return obj.address.postcode === postcode; });
-              var delivers = userPostcodes.filter(function (obj) { return obj.roles[0] === 'deliver'; });
+              var userPostcodes = users.filter(function (obj) {
+                return obj.address.postcode === postcode;
+              });
+              var delivers = userPostcodes.filter(function (obj) {
+                return obj.roles[0] === 'deliver';
+              });
               if (delivers.length > 0) {
                 req.area = true;
                 next();
@@ -79,8 +85,12 @@ exports.postcode = function (req, res, next, postcode) {
               message: errorHandler.getErrorMessage(err)
             });
           } else {
-            var userPostcodes = users.filter(function (obj) { return obj.address.postcode === postcode; });
-            var delivers = userPostcodes.filter(function (obj) { return obj.roles[0] === 'deliver'; });
+            var userPostcodes = users.filter(function (obj) {
+              return obj.address.postcode === postcode;
+            });
+            var delivers = userPostcodes.filter(function (obj) {
+              return obj.roles[0] === 'deliver';
+            });
             if (delivers.length > 0) {
               req.area = true;
               next();
@@ -96,13 +106,18 @@ exports.postcode = function (req, res, next, postcode) {
 };
 
 exports.resultpostcode = function (req, res) {
-  res.jsonp({ postcode: req.postcode, area: true });
+  res.jsonp({
+    postcode: req.postcode,
+    area: true
+  });
 };
 
 exports.adminCreate = function (req, res, next) {
   var order = new Order(req.body);
   if (req.user && req.user.roles[0] === 'admin') {
-    User.find({ username: order.shipping.tel }).sort('-created').exec(function (err, users) {
+    User.find({
+      username: order.shipping.tel
+    }).sort('-created').exec(function (err, users) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
@@ -158,7 +173,11 @@ exports.checkDeliver = function (req, res, next) {
     next();
   } else {
     if (req.usercreate && req.usercreate !== undefined) {
-      Order.find({ user: { _id: req.usercreate._id } }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
+      Order.find({
+        user: {
+          _id: req.usercreate._id
+        }
+      }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
@@ -185,7 +204,11 @@ exports.checkDeliver = function (req, res, next) {
         }
       });
     } else {
-      Order.find({ user: { _id: req.user._id } }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
+      Order.find({
+        user: {
+          _id: req.user._id
+        }
+      }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
@@ -492,7 +515,9 @@ exports.update = function (req, res) {
 
   order = _.extend(order, req.body);
   if (order.deliverystatus === 'accept') {
-    Order.find({ _id: order._id }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
+    Order.find({
+      _id: order._id
+    }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
@@ -548,7 +573,11 @@ exports.delete = function (req, res) {
  */
 exports.list = function (req, res) {
   var filter = null;
-  filter = { deliverystatus: { $ne: 'ap' } };
+  filter = {
+    deliverystatus: {
+      $ne: 'ap'
+    }
+  };
   //example or { $or:[ {'_id':objId}, {'name':param}, {'nickname':param} ]}
 
 
@@ -573,7 +602,9 @@ exports.list = function (req, res) {
 };
 
 exports.confirmed = function (req, res, next) {
-  Order.find({ deliverystatus: 'confirmed' }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, confirmed) {
+  Order.find({
+    deliverystatus: 'confirmed'
+  }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, confirmed) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -667,7 +698,9 @@ exports.accept = function (req, res, next) {
 };
 
 exports.reject = function (req, res, next) {
-  Order.find({ deliverystatus: 'reject' }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, rejects) {
+  Order.find({
+    deliverystatus: 'reject'
+  }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, rejects) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -757,7 +790,9 @@ exports.cancel = function (req, res, next) {
     req.cancel = [];
     next();
   } else {
-    Order.find({ deliverystatus: 'cancel' }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, cancels) {
+    Order.find({
+      deliverystatus: 'cancel'
+    }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, cancels) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
@@ -891,7 +926,15 @@ exports.orderByID = function (req, res, next, id) {
 exports.startdate = function (req, res, next, enddate) {
   var end = new Date(enddate);
   var startdate = req.startdate;
-  Order.find({ created: { $gte: startdate, $lte: end }, deliverystatus: { $ne: 'cancel' } }).sort('created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
+  Order.find({
+    created: {
+      $gte: startdate,
+      $lte: end
+    },
+    deliverystatus: {
+      $ne: 'cancel'
+    }
+  }).sort('created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
     if (err) {
       return next(err);
     } else if (!orders) {
@@ -913,19 +956,41 @@ exports.salereport = function (req, res, next) {
   var avgMaxMin = progressOfDate(saleday);
   var percenOfProd = percenProd(saleprod);
 
-  res.jsonp({ orders: orderslist, saleday: saleday, saleprod: saleprod, avg: avgMaxMin, percens: percenOfProd });
+  res.jsonp({
+    orders: orderslist,
+    saleday: saleday,
+    saleprod: saleprod,
+    avg: avgMaxMin,
+    percens: percenOfProd
+  });
 
 };
 
 exports.findinvestor = function (req, res, next) {
   var users = [];
-  Order.find({ $and: [{ src: { $ne: 'ios' } }, { src: { $ne: 'android' } }, { src: { $ne: 'web' } }] }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
+  Order.find({
+    $and: [{
+      src: {
+        $ne: 'ios'
+      }
+    }, {
+      src: {
+        $ne: 'android'
+      }
+    }, {
+      src: {
+        $ne: 'web'
+      }
+    }]
+  }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      var datas = orders.filter(function (obj) { return obj.docno.length > 13; });
+      var datas = orders.filter(function (obj) {
+        return obj.docno.length > 13;
+      });
       req.findinvestororder = datas;
       datas.forEach(function (order) {
         if (order.user && order.user._id) {
@@ -943,7 +1008,15 @@ exports.findinvestor = function (req, res, next) {
 exports.updateusertoinvestor = function (req, res, next) {
   // console.log(req.isinvestor);
   // var users = req.findinvestororder.filter(function (obj) { return obj.user; });
-  User.update({ _id: { '$in': req.isinvestor } }, { isinvestor: true }, { multi: true }, function (err, docs) {
+  User.update({
+    _id: {
+      '$in': req.isinvestor
+    }
+  }, {
+    isinvestor: true
+  }, {
+    multi: true
+  }, function (err, docs) {
     next();
   });
 };
@@ -952,7 +1025,10 @@ exports.updateusertoinvestor = function (req, res, next) {
 
 
 exports.updateinvestor = function (req, res) {
-  res.jsonp({ orders: req.findinvestororder, isinvestor: req.isinvestor });
+  res.jsonp({
+    orders: req.findinvestororder,
+    isinvestor: req.isinvestor
+  });
 };
 
 exports.adminCreateSub = function (req, res, next) {
@@ -965,7 +1041,9 @@ exports.adminCreateSub = function (req, res, next) {
     } else {
       req.user = user;
       if (req.user && req.user.roles[0] === 'admin') {
-        User.find({ username: order.shipping.tel }).sort('-created').exec(function (err, users) {
+        User.find({
+          username: order.shipping.tel
+        }).sort('-created').exec(function (err, users) {
           if (err) {
             return res.status(400).send({
               message: errorHandler.getErrorMessage(err)
@@ -1021,7 +1099,11 @@ exports.checkDeliverSub = function (req, res, next) {
     next();
   } else {
     if (req.usercreate && req.usercreate !== undefined) {
-      Order.find({ user: { _id: req.usercreate._id } }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
+      Order.find({
+        user: {
+          _id: req.usercreate._id
+        }
+      }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
@@ -1048,7 +1130,11 @@ exports.checkDeliverSub = function (req, res, next) {
         }
       });
     } else {
-      Order.find({ user: { _id: req.user._id } }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
+      Order.find({
+        user: {
+          _id: req.user._id
+        }
+      }).sort('-created').populate('user').populate('items.product').populate('namedeliver').exec(function (err, orders) {
         if (err) {
           return res.status(400).send({
             message: errorHandler.getErrorMessage(err)
@@ -1495,11 +1581,11 @@ function sendNewOrder() {
             url: pushNotiUrl,
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'Basic MjZjMWRhMDUtNjYxZC00MjI4LTg1NWUtNzhhNTFlNjZjMGJk'
+              'Authorization': process.env.ONESIGNAL_ADMIN_TOKEN || 'Basic MjZjMWRhMDUtNjYxZC00MjI4LTg1NWUtNzhhNTFlNjZjMGJk'
             },
             method: 'POST',
             json: {
-              app_id: 'd70cd18c-0d4a-49eb-ab23-97be42a22fa4',
+              app_id: process.env.ONESIGNAL_ADMIN_APPID || 'd70cd18c-0d4a-49eb-ab23-97be42a22fa4',
               include_player_ids: admtokens,
               headings: {
                 en: 'คุณมีรายการสั่งซื้อข้าวใหม่'
@@ -1528,13 +1614,12 @@ function sendNewOrder() {
 
 function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
   var R = 6371; // Radius of the earth in km
-  var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+  var dLat = deg2rad(lat2 - lat1); // deg2rad below
   var dLon = deg2rad(lon2 - lon1);
   var a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2)
-    ;
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = R * c; // Distance in km
   return d;
@@ -1645,7 +1730,11 @@ function checkNotiUser(delivers, shipping) {
 }
 
 function sendAcceptedDeliverOrder(order, deliver) {
-  Pushnotiuser.find({ user_id: { $ne: order.namedeliver } }).sort('-created').where('role').equals('deliver').exec(function (err, delivers) {
+  Pushnotiuser.find({
+    user_id: {
+      $ne: order.namedeliver
+    }
+  }).sort('-created').where('role').equals('deliver').exec(function (err, delivers) {
     if (err) {
 
     } else {
@@ -1715,8 +1804,15 @@ function sendNewDeliver(deliver) {
                   profile: pushNotiAuthenDEL.profile,
                   notification: {
                     message: 'คุณมีรายการค้างส่งข้าว ' + orders.length + ' รายการ',
-                    ios: { badge: orders.length, sound: 'default' },
-                    android: { data: { badge: orders.length } }
+                    ios: {
+                      badge: orders.length,
+                      sound: 'default'
+                    },
+                    android: {
+                      data: {
+                        badge: orders.length
+                      }
+                    }
                     // android: { badge: orders.length, sound: 'default' }
                   }
                 }
